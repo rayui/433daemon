@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+#build assets
+433daemon
+
+#temporary files
+*.swp
