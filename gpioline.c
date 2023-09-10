@@ -10,7 +10,7 @@
 #define	CONSUMER	"Consumer"
 #endif
 
-void updateTick(struct GPIOLine *gpioLine) {
+bool updateTick(struct GPIOLine *gpioLine) {
   struct timespec ts = { 1, 0 };
 	struct gpiod_line_event event;
 	int ret = gpiod_line_event_wait(gpioLine->line, &ts);
@@ -18,23 +18,25 @@ void updateTick(struct GPIOLine *gpioLine) {
 	if (ret < 0) {
 		perror("Wait event notification failed\n");
     gpioLine->state = GPIO_ERR;
-    return;
+    return false;
 	} else if (ret == 0) {
 		printf("Wait event notification on line #%u timeout\n", gpioLine->num);
     gpioLine->state = GPIO_WAIT;
-    return;
+    return true;
 	}
 
 	ret = gpiod_line_event_read(gpioLine->line, &event);
 	if (ret < 0) {
 		perror("Read last event notification failed\n");
     gpioLine->state = GPIO_ERR;
-    return;
+    return false;
 	}
 
   gpioLine->state = GPIO_OK;
   gpioLine->last_tick = gpioLine->tick;  
   gpioLine->tick = event.ts.tv_sec * 1000000 + event.ts.tv_nsec / 1000; 
+
+  return true;
 }
 
 struct GPIOLine *createGPIOLine(int num, struct gpiod_chip *chip) {

@@ -25,14 +25,8 @@ struct Parser {
 
 struct Parser *createParser(int id, int len, int short_min, int long_min, int long_max);
 struct Parser *destroyParser(struct Parser *parser);
-bool isLastPulseValid(struct Parser *parser);
 void resetParser(struct Parser *parser);
-bool isParserReady(struct Parser *parser, int pulse_type);
 void commitBit(struct Parser *parser);
-bool isParserDone(struct Parser *parser); 
-void printBits(struct Parser *parser); 
-void flipParser(struct Parser *parser); 
-void setPulse(struct Parser *parser, int pulse_type); 
 int getPulseType(struct Parser *parser, int w);
 void decodePulse(struct Parser *parser, int width); 
 

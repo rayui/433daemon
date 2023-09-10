@@ -22,40 +22,16 @@ struct Parser *destroyParser(struct Parser *parser) {
   return parser;
 } 
 
-bool isLastPulseValid(struct Parser *parser) {
-  return parser->last_pulse != INVALID_PULSE;
-}
-
 void resetParser(struct Parser *parser) {
   parser->data = 0;
   parser->pos = 0;
   parser->flip = false;
 }
 
-bool isParserReady(struct Parser *parser, int pulse_type) {
-  return parser->flip && parser->last_pulse ^ pulse_type;
-}
-
 void commitBit(struct Parser *parser) {
  	parser->data += (parser->last_pulse << parser->pos);
   parser->pos++;
   parser->flip = false;
-}
-
-bool isParserDone(struct Parser *parser) {
-  return parser->data != 0 && parser->pos == parser->len;
-}
-     
-void printBits(struct Parser *parser) {
-  printHex(parser->data, parser->len);
-}
-
-void flipParser(struct Parser *parser) {
-  parser->flip = true;
-}
-
-void setPulse(struct Parser *parser, int pulse_type) {
-  parser->last_pulse = pulse_type;
 }
 
 int getPulseType(struct Parser *parser, int w) {
@@ -73,18 +49,17 @@ int getPulseType(struct Parser *parser, int w) {
 void decodePulse(struct Parser *parser, int width) {
   int pulse_type = getPulseType(parser, width);
 
-  if (!isLastPulseValid(parser)) {
+  if (parser->last_pulse == INVALID_PULSE) {
     resetParser(parser);
-	} else if (isParserReady(parser, pulse_type)) {
+	} else if (parser->flip && parser->last_pulse ^ pulse_type) {
     commitBit(parser);
-	  if (isParserDone(parser)) {
-      printBits(parser);
+	  if (parser->data != 0 && parser->pos == parser->len) {
+      printHex(parser->data, parser->len);
 		}
   } else {
-    flipParser(parser);
+    parser->flip = true;
   }
-
-  setPulse(parser, pulse_type);
+  parser->last_pulse = pulse_type;
 }
 
 

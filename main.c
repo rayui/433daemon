@@ -24,29 +24,22 @@ int main(int argc, char **argv)
 
   gpioLine = createGPIOLine(line_num, chip);
   if (isGPIOErr(gpioLine)) {
-    destroyGPIOLine(gpioLine);
-    goto close_chip;
+    goto close_gpio;
   }
 
   requestEvents(gpioLine); 
   if (isGPIOErr(gpioLine)) {
-    destroyGPIOLine(gpioLine);
-    goto close_chip;
+    goto close_gpio;
   }
 
-	while (true) {
-    updateTick(gpioLine);
-
-    if (isGPIOErr(gpioLine)) {
-      destroyGPIOLine(gpioLine);
-      goto close_chip;
-    } else if (isGPIOWaiting(gpioLine)) {
-      continue;
-    } else {
+	while (updateTick(gpioLine)) {
+    if (!isGPIOWaiting(gpioLine)) {
       decodePulse(parser, getLastWidth(gpioLine));
     }
 	}
 
+close_gpio:
+  destroyGPIOLine(gpioLine);
 close_chip:
 	gpiod_chip_close(chip);
 end:
