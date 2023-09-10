@@ -43,7 +43,7 @@ void commitBit(struct Parser *parser) {
 }
 
 bool isParserDone(struct Parser *parser) {
-  return parser->pos == parser->len && parser->data & 0x6 == 6;
+  return parser->data != 0 && parser->pos == parser->len;
 }
      
 void printBits(struct Parser *parser) {

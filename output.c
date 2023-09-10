@@ -10,6 +10,11 @@ void printBinary(unsigned long long data, int len) {
 }
 
 void printHex(unsigned long long data, int len) {
-  printf("%02x%02x%02x\n", data & 0xFF, (data >> 8) & 0xFF, (data >> 16) & 0xFF);
+  int i = 0;
+  while (i < len - 7) {
+    printf("%02x", (data >> i) & 0xFF);
+    i += 8;
+  }
+  printf("\n");
   fflush(stdout);
 }
