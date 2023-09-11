@@ -7,7 +7,8 @@
 #define GPIO_ERR 1
 #define GPIO_WAIT 2
 
-struct GPIOLine {
+struct GPIOLine
+{
   int num;
   int state;
   unsigned long long last_tick;
@@ -17,10 +18,9 @@ struct GPIOLine {
 
 struct GPIOLine *createGPIOLine(int num, struct gpiod_chip *chip);
 struct GPIOLine *destroyGPIOLine(struct GPIOLine *gpioLine);
-bool updateTick(struct GPIOLine *gpioLine); 
+bool updateTick(struct GPIOLine *gpioLine);
 void requestEvents(struct GPIOLine *gpioLine);
-void getTick(struct GPIOLine *gpioLine); 
+void getTick(struct GPIOLine *gpioLine);
 bool isGPIOErr(struct GPIOLine *gpioLine);
 bool isGPIOWaiting(struct GPIOLine *gpioLine);
 int getLastWidth(struct GPIOLine *gpioLine);
-

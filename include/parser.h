@@ -3,15 +3,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define SHORT_PULSE_MIN 70
-#define LONG_PULSE_MIN 281 
-#define LONG_PULSE_MAX 575 
-
-#define INVALID_PULSE -1 
+#define INVALID_PULSE -1
 #define SHORT_PULSE 0
 #define LONG_PULSE 1
 
-struct Parser {
+struct Parser
+{
   int id;
   unsigned long data;
   int pos;
@@ -28,5 +25,4 @@ struct Parser *destroyParser(struct Parser *parser);
 void resetParser(struct Parser *parser);
 void commitBit(struct Parser *parser);
 int getPulseType(struct Parser *parser, int w);
-void decodePulse(struct Parser *parser, int width); 
-
+void decodePulse(struct Parser *parser, int width);

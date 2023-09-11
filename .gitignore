@@ -56,3 +56,6 @@ dkms.conf
 
 #temporary files
 *.swp
+
+#devconfig
+.vscode
