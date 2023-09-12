@@ -29,8 +29,8 @@ int main(int argc, char **argv)
   long_pulse_min = atoi(argv[5]);
   long_pulse_max = atoi(argv[6]);
 
-  parser = createParser(0, buff_len * 8, short_pulse_min, long_pulse_min, long_pulse_max);
-	
+  parser = createParser(0, buff_len, short_pulse_min, long_pulse_min, long_pulse_max);
+  
   chip = gpiod_chip_open_by_name(argv[1]);
 	if (!chip) {
 		perror("Open chip failed\n");

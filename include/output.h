@@ -10,4 +10,4 @@
       ((byte) & 0x01 ? '1' : '0')
 
 void printBinary(unsigned long long data, int len);
-void printHex(unsigned long long data, int len);
+void printHex(char *data, unsigned int len);

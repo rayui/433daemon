@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdint.h>
 #include "include/parser.h"
 #include "include/output.h"
 
@@ -7,12 +5,12 @@ struct Parser *createParser(int id, int len, int short_min, int long_min, int lo
 {
   struct Parser *parser = malloc(sizeof(struct Parser));
   parser->id = id;
-  parser->len = len;
+  parser->len = len * sizeof(char) * 8;
   parser->short_min = short_min;
   parser->long_min = long_min;
   parser->long_max = long_max;
   parser->last_pulse = INVALID_PULSE;
-  parser->data = 0;
+  parser->data = malloc(parser->len);
   parser->pos = 0;
   parser->flip = false;
   return parser;
@@ -20,20 +18,22 @@ struct Parser *createParser(int id, int len, int short_min, int long_min, int lo
 
 struct Parser *destroyParser(struct Parser *parser)
 {
+  free(parser->data);
   free(parser);
   return parser;
 }
 
 void resetParser(struct Parser *parser)
 {
-  parser->data = 0;
+  free(parser->data);
+  parser->data = malloc(parser->len);
   parser->pos = 0;
   parser->flip = false;
 }
 
 void commitBit(struct Parser *parser)
 {
-  parser->data += (parser->last_pulse << parser->pos);
+  parser->data[parser->pos] = parser->last_pulse;
   parser->pos++;
   parser->flip = false;
 }
@@ -67,7 +67,7 @@ void decodePulse(struct Parser *parser, int width)
   else if (parser->flip && parser->last_pulse ^ pulse_type)
   {
     commitBit(parser);
-    if (parser->data != 0 && parser->pos == parser->len)
+    if (parser->pos == parser->len)
     {
       printHex(parser->data, parser->len);
     }

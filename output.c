@@ -10,13 +10,22 @@ void printBinary(unsigned long long data, int len)
   fflush(stdout);
 }
 
-void printHex(unsigned long long data, int len)
+void printHex(char *data, unsigned int len)
 {
-  int i = 0;
-  while (i < len - 7)
+  unsigned int i = 0;
+  unsigned int pos = 0;
+  unsigned int res = 0;
+
+  while (pos < len)
   {
-    printf("%02x", (data >> i) & 0xFF);
-    i += 8;
+    i = 0;
+    res = 0;
+    while (i < 8) {
+      res += (data[pos] << i);
+      i++;
+      pos++;
+    }
+    printf("%02x", res);
   }
   printf("\n");
   fflush(stdout);

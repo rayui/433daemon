@@ -10,7 +10,7 @@
 struct Parser
 {
   int id;
-  unsigned long data;
+  char *data;
   int pos;
   int len;
   int last_pulse;
