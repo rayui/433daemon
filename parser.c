@@ -69,7 +69,7 @@ void decodePulse(struct Parser *parser, int width)
     commitBit(parser);
     if (parser->pos == parser->len)
     {
-      printHex(parser->data, parser->len);
+      printBinary(parser->data, parser->len);
     }
   }
   else

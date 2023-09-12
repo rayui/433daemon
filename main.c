@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "include/parser.h"
+#include "include/ook.h"
 #include "include/gpioline.h"
 
 int main(int argc, char **argv)
@@ -11,15 +12,17 @@ int main(int argc, char **argv)
 	struct gpiod_chip *chip;
   struct GPIOLine *gpioLine;
   struct Parser *parser;
+  struct OokDecoder *decoder;
 	
   unsigned int line_num = 27;
   unsigned int buff_len = 8;
   unsigned int short_pulse_min = 0;
   unsigned int long_pulse_min = 0;
   unsigned int long_pulse_max = 0;
+  unsigned int protocol = 0;
 
-  if( argc != 7 ) {
-    printf("Arguments are: chipname gpio_pin buffer_len(bytes, max 8) short_pulse_min(us) long_pulse_min(us) long_pulse_max(us)\ne.g. %s gpiochip0 27 3 190 400 750\n", argv[0]);
+  if( argc != 8 ) {
+    printf("Arguments are: chipname gpio_pin buffer_len(bytes, max 8) short_pulse_min(us) long_pulse_min(us) long_pulse_max(us) protocol(pulse=0|ook=1)\ne.g. %s gpiochip0 27 3 190 400 750 0\n", argv[0]);
     return 0;
   }
 
@@ -28,8 +31,10 @@ int main(int argc, char **argv)
   short_pulse_min = atoi(argv[4]);
   long_pulse_min = atoi(argv[5]);
   long_pulse_max = atoi(argv[6]);
+  protocol = atoi(argv[7]);
 
   parser = createParser(0, buff_len, short_pulse_min, long_pulse_min, long_pulse_max);
+  decoder = createOokDecoder(1, buff_len, short_pulse_min, long_pulse_min, long_pulse_max);
   
   chip = gpiod_chip_open_by_name(argv[1]);
 	if (!chip) {
@@ -53,7 +58,13 @@ int main(int argc, char **argv)
   {
     if (!isGPIOWaiting(gpioLine))
     {
-      decodePulse(parser, getLastWidth(gpioLine));
+      if (protocol == 0) {
+        decodePulse(parser, getLastWidth(gpioLine));
+      } else {
+        if (nextPulseOok(decoder, getLastWidth(gpioLine))) {
+          sprintOok(decoder);
+        }
+      }
     }
   }
 
