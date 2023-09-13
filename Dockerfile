@@ -12,8 +12,11 @@ FROM node:lts-bullseye-slim
 WORKDIR /app
 
 ARG UID=1001
+ARG GID=997
 ENV UID=$UID
-RUN useradd -m --uid $UID -g users -G dialout user
+ENV GID=$GID
+RUN groupadd -g $GID gpio
+RUN useradd -m --uid $UID -g users -G $GID user
 
 COPY --chown=user:users --from=node /app .
 
