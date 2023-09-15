@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "include/gpioline.h"
+#include "include/output.h"
 
 #ifndef CONSUMER
 #define CONSUMER "Consumer"
@@ -24,7 +25,7 @@ bool updateTick(struct GPIOLine *gpioLine)
   }
   else if (ret == 0)
   {
-    printf("Wait event notification on line #%u timeout\n", gpioLine->num);
+    printWaitError(gpioLine->num);
     gpioLine->state = GPIO_WAIT;
     return true;
   }

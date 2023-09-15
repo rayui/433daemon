@@ -21,7 +21,8 @@ void printBinary(char *data, unsigned int len)
   {
     i = 0;
     res = 0;
-    while (i < 8) {
+    while (i < 8)
+    {
       res += (data[pos] << i);
       i++;
       pos++;
@@ -42,5 +43,11 @@ void printHex(char *data, unsigned int len)
     pos++;
   }
   printf("\n");
+  fflush(stdout);
+}
+
+void printWaitError(unsigned int num)
+{
+  printf("Wait event notification on line #%u timeout\n", num);
   fflush(stdout);
 }

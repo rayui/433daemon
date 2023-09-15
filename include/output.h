@@ -9,6 +9,7 @@
       ((byte) & 0x02 ? '1' : '0'), \
       ((byte) & 0x01 ? '1' : '0')
 
-//void printBinary(unsigned long long data, int len);
+// void printBinary(unsigned long long data, int len);
 void printBinary(char *data, unsigned int len);
 void printHex(char *data, unsigned int len);
+void printWaitError(unsigned int num);
