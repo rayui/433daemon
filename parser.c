@@ -38,7 +38,7 @@ void commitBit(struct Parser *parser)
   parser->flip = false;
 }
 
-int getPulseType(struct Parser *parser, int w)
+int getPulseType(struct Parser *parser, unsigned int w)
 {
   if (w < parser->short_min)
   {
@@ -56,7 +56,7 @@ int getPulseType(struct Parser *parser, int w)
   return INVALID_PULSE;
 }
 
-void decodePulse(struct Parser *parser, int width)
+void decodePulse(struct Parser *parser, unsigned int width)
 {
   int pulse_type = getPulseType(parser, width);
 

@@ -27,10 +27,10 @@ bool nextPulseOok(struct OokDecoder *decoder, unsigned int width) {
     switch (decodeOok(decoder, width)) {
       case -1:
         resetOok(decoder);
-        break;
+        return false;
       case 1:
         decoder->state = STATE_DONE;
-        break;
+        return true;
     }
     return decoder->state == STATE_DONE;
   }
@@ -42,8 +42,6 @@ void resetOok(struct OokDecoder *decoder) {
   decoder->pos = 0;
   decoder->flip = 0;
   decoder->state = STATE_UNKNOWN;
-  free(decoder->data);
-  decoder->data = malloc(sizeof(unsigned char) * decoder->len * 8);
 }
 
 void manchesterOok(struct OokDecoder *decoder, bool value) {
@@ -97,9 +95,12 @@ unsigned int decodeOok(struct OokDecoder *decoder, unsigned int width) {
         }
     }
   } else {
+    if (decoder->pos >= 4) {
+      printf("bad width %d pos %d bit %d\n", width, decoder->pos, decoder->total_bits);
+    }
     return -1;
   }
 
-  return decoder->total_bits == decoder->len * 8 - 1 ? 1 : 0;
+  return decoder->total_bits == (decoder->len << 3) - 1 ? 1 : 0;
 }
 

@@ -24,5 +24,5 @@ struct Parser *createParser(int id, int len, int short_min, int long_min, int lo
 struct Parser *destroyParser(struct Parser *parser);
 void resetParser(struct Parser *parser);
 void commitBit(struct Parser *parser);
-int getPulseType(struct Parser *parser, int w);
-void decodePulse(struct Parser *parser, int width);
+int getPulseType(struct Parser *parser, unsigned int w);
+void decodePulse(struct Parser *parser, unsigned int width);

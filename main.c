@@ -28,9 +28,9 @@ int main(int argc, char **argv)
 
   line_num = atoi(argv[2]);
   buff_len = atoi(argv[3]);
-  short_pulse_min = atoi(argv[4]);
-  long_pulse_min = atoi(argv[5]);
-  long_pulse_max = atoi(argv[6]);
+  short_pulse_min = atoi(argv[4]) * 1000;
+  long_pulse_min = atoi(argv[5]) * 1000;
+  long_pulse_max = atoi(argv[6]) * 1000;
   protocol = atoi(argv[7]);
 
   parser = createParser(0, buff_len, short_pulse_min, long_pulse_min, long_pulse_max);
@@ -65,6 +65,9 @@ int main(int argc, char **argv)
           sprintOok(decoder);
         }
       }
+      setLastTick(gpioLine);
+    } else {
+      printf("Waiting...\n");
     }
   }
 
@@ -74,5 +77,6 @@ close_chip:
   gpiod_chip_close(chip);
 end:
   destroyParser(parser);
+  destroyOokDecoder(decoder);
   return -1;
 }

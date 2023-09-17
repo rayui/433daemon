@@ -13,7 +13,7 @@
 
 bool updateTick(struct GPIOLine *gpioLine)
 {
-  struct timespec ts = {1, 0};
+  struct timespec ts = {10, 0};
   struct gpiod_line_event event;
   int ret = gpiod_line_event_wait(gpioLine->line, &ts);
 
@@ -39,10 +39,14 @@ bool updateTick(struct GPIOLine *gpioLine)
   }
 
   gpioLine->state = GPIO_OK;
-  gpioLine->last_tick = gpioLine->tick;
-  gpioLine->tick = event.ts.tv_sec * 1000000 + event.ts.tv_nsec / 1000;
+  gpioLine->tick = event.ts.tv_sec * 10^9 + event.ts.tv_nsec;
 
   return true;
+}
+
+void setLastTick(struct GPIOLine *gpioLine)
+{
+  gpioLine->last_tick = gpioLine->tick;
 }
 
 struct GPIOLine *createGPIOLine(int num, struct gpiod_chip *chip)
@@ -89,7 +93,7 @@ bool isGPIOWaiting(struct GPIOLine *gpioLine)
   return gpioLine->state == GPIO_WAIT;
 }
 
-int getLastWidth(struct GPIOLine *gpioLine)
+unsigned int getLastWidth(struct GPIOLine *gpioLine)
 {
   return gpioLine->tick - gpioLine->last_tick;
 }
