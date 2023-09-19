@@ -13,10 +13,26 @@
 
 bool updateTick(struct GPIOLine *gpioLine)
 {
-  struct timespec ts = {10, 0};
   struct gpiod_line_event event;
-  int ret = gpiod_line_event_wait(gpioLine->line, &ts);
+  
+  int ret = gpiod_line_event_read(gpioLine->line, &event);
+  if (ret < 0)
+  {
+    perror("Read last event notification failed\n");
+    gpioLine->state = GPIO_ERR;
+    return false;
+  }
 
+  if (ret > 0) printf("%d\n", ret);  
+  gpioLine->tick = event.ts.tv_sec * 1000000000 + event.ts.tv_nsec;
+
+  return true;
+}
+
+bool isEventReady(struct GPIOLine *gpioLine)
+{
+  struct timespec ts = {10, 0};
+  int ret = gpiod_line_event_wait(gpioLine->line, &ts);
   if (ret < 0)
   {
     perror("Wait event notification failed\n");
@@ -27,20 +43,10 @@ bool updateTick(struct GPIOLine *gpioLine)
   {
     printWaitError(gpioLine->num);
     gpioLine->state = GPIO_WAIT;
-    return true;
-  }
-
-  ret = gpiod_line_event_read(gpioLine->line, &event);
-  if (ret < 0)
-  {
-    perror("Read last event notification failed\n");
-    gpioLine->state = GPIO_ERR;
     return false;
   }
 
   gpioLine->state = GPIO_OK;
-  gpioLine->tick = event.ts.tv_sec * 10^9 + event.ts.tv_nsec;
-
   return true;
 }
 

@@ -54,20 +54,21 @@ int main(int argc, char **argv)
     goto close_gpio;
   }
 
-  while (updateTick(gpioLine))
+  while (!isGPIOErr(gpioLine))
   {
-    if (!isGPIOWaiting(gpioLine))
+    if (isEventReady(gpioLine))
     {
-      if (protocol == 0) {
-        decodePulse(parser, getLastWidth(gpioLine));
-      } else {
-        if (nextPulseOok(decoder, getLastWidth(gpioLine))) {
-          sprintOok(decoder);
+      while (updateTick(gpioLine))
+      {
+        if (protocol == 0) {
+          decodePulse(parser, getLastWidth(gpioLine));
+        } else {
+          if (nextPulseOok(decoder, getLastWidth(gpioLine))) {
+            sprintOok(decoder);
+          }
         }
+        setLastTick(gpioLine);
       }
-      setLastTick(gpioLine);
-    } else {
-      printf("Waiting...\n");
     }
   }
 

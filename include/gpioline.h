@@ -19,6 +19,7 @@ struct GPIOLine
 struct GPIOLine *createGPIOLine(int num, struct gpiod_chip *chip);
 struct GPIOLine *destroyGPIOLine(struct GPIOLine *gpioLine);
 bool updateTick(struct GPIOLine *gpioLine);
+bool isEventReady(struct GPIOLine *gpioLine);
 void setLastTick(struct GPIOLine *gpioLine);
 void requestEvents(struct GPIOLine *gpioLine);
 void getTick(struct GPIOLine *gpioLine);
