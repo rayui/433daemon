@@ -1,16 +1,17 @@
 #include "include/parser.h"
 #include "include/output.h"
 
-struct Parser *createParser(int id, int len, int short_min, int long_min, int long_max)
+struct Parser *createParser(int id, int min_len, int max_len, int short_min, int long_min, int long_max)
 {
   struct Parser *parser = malloc(sizeof(struct Parser));
   parser->id = id;
-  parser->len = len * sizeof(char) * 8;
+  parser->min_len = min_len;
+  parser->max_len = max_len;
   parser->short_min = short_min;
   parser->long_min = long_min;
   parser->long_max = long_max;
   parser->last_pulse = INVALID_PULSE;
-  parser->data = malloc(parser->len);
+  parser->data = malloc(parser->max_len);
   parser->pos = 0;
   parser->flip = false;
   return parser;
@@ -26,7 +27,7 @@ struct Parser *destroyParser(struct Parser *parser)
 void resetParser(struct Parser *parser)
 {
   free(parser->data);
-  parser->data = malloc(parser->len);
+  parser->data = malloc(parser->max_len);
   parser->pos = 0;
   parser->flip = false;
 }
@@ -62,14 +63,18 @@ void decodePulse(struct Parser *parser, unsigned int width)
 
   if (parser->last_pulse == INVALID_PULSE)
   {
+    if (parser->pos >= parser->min_len)
+    {
+      printBinary(parser->data, parser->pos);
+    }
     resetParser(parser);
   }
   else if (parser->flip && parser->last_pulse ^ pulse_type)
   {
     commitBit(parser);
-    if (parser->pos == parser->len)
+    if (parser->pos == parser->max_len)
     {
-      printBinary(parser->data, parser->len);
+      printBinary(parser->data, parser->max_len);
     }
   }
   else

@@ -12,7 +12,8 @@ struct Parser
   int id;
   char *data;
   int pos;
-  int len;
+  int min_len;
+  int max_len;
   int last_pulse;
   int short_min;
   int long_min;
@@ -20,7 +21,7 @@ struct Parser
   bool flip;
 };
 
-struct Parser *createParser(int id, int len, int short_min, int long_min, int long_max);
+struct Parser *createParser(int id, int min_len, int max_len, int short_min, int long_min, int long_max);
 struct Parser *destroyParser(struct Parser *parser);
 void resetParser(struct Parser *parser);
 void commitBit(struct Parser *parser);

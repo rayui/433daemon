@@ -4,13 +4,6 @@
 #include <unistd.h>
 #include "include/output.h"
 
-/*void printBinary(unsigned long long data, int len)
-{
-  printf(BYTE_TO_BINARY_PATTERN " " BYTE_TO_BINARY_PATTERN " " BYTE_TO_BINARY_PATTERN "\n", BYTE_TO_BINARY(data & 0xFF), BYTE_TO_BINARY((data >> 8) & 0xFF), BYTE_TO_BINARY((data >> 16) & 0xFF));
-  fflush(stdout);
-}
-*/
-
 void printBinary(char *data, unsigned int len)
 {
   unsigned int i = 0;
@@ -33,9 +26,10 @@ void printBinary(char *data, unsigned int len)
   fflush(stdout);
 }
 
-void printHex(char *data, unsigned int len)
+void printHex(char *data, unsigned int len_bits)
 {
   unsigned int pos = 0;
+  unsigned int len = (len_bits + 7) >> 3;
 
   while (pos < len)
   {
